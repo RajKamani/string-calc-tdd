@@ -37,4 +37,12 @@ describe("String Calculator", () => {
   test("should displays error for negative numbers", () => {
     validator("//;\\n1;-2;3;-4", "Negative numbers not allowed: -2, -4");
   });
+
+  test("should ignore numbers greater than 1000", () => {
+    validator("2,1001", "Result: 2");
+  });
+
+  test("should handle custom delimiters of any length", () => {
+    validator("//[***]\\n1***2***3", "Result: 6");
+  });
 });
