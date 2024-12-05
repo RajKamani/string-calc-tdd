@@ -8,7 +8,7 @@ describe("String Calculator", () => {
     expect(screen.getByTestId("calculate-button")).toBeInTheDocument();
   });
 
-  test("shows 0 for empty input", () => {
+  test("should shows 0 for empty input", () => {
     render(<StringCalculator />);
     const input = screen.getByTestId("input-box");
     const button = screen.getByTestId("calculate-button");
@@ -19,12 +19,23 @@ describe("String Calculator", () => {
     expect(screen.getByTestId("result-message")).toHaveTextContent("Result: 0");
   });
 
-  test("calculates sum for multiple numbers", () => {
+  test("should calculates sum for multiple numbers", () => {
     render(<StringCalculator />);
     const input = screen.getByTestId("input-box");
     const button = screen.getByTestId("calculate-button");
 
     fireEvent.change(input, { target: { value: "1,2,3" } });
+    fireEvent.click(button);
+
+    expect(screen.getByTestId("result-message")).toHaveTextContent("Result: 6");
+  })
+
+  test("should handle newlines as delimiters", () => {
+    render(<StringCalculator />);
+    const input = screen.getByTestId("input-box");
+    const button = screen.getByTestId("calculate-button");
+
+    fireEvent.change(input, { target: { value: "1\\n2,3" } });
     fireEvent.click(button);
 
     expect(screen.getByTestId("result-message")).toHaveTextContent("Result: 6");

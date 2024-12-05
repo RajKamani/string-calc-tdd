@@ -2,7 +2,8 @@ import React, { useState } from "react";
 
 const parseNumbers = (input: string):number => {
   if (!input) return 0;
-  return 0;
+  const numArray = input.split(/,|\\n/).map(Number);
+  return numArray.reduce((sum, num) => sum + num, 0);
 };
 
 const StringCalculator: React.FC = () => {
