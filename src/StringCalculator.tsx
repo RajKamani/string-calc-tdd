@@ -8,10 +8,12 @@ const parseNumbers = (input: string):{ sum: number; error?: string } => {
   
   let delimiter = /,|\\n/;
   if (input.startsWith("//")) {
-    const delimiterPart = input.match(/^\/\/\[(.+)\]\\n/);
+    const delimiterPart = input.match(/^\/\/(\[.+\])\\n/);
     if (delimiterPart) {
-      const rawDelimiter = delimiterPart[1];
-      delimiter = new RegExp(escapeRegex(rawDelimiter));
+      const delimiters = delimiterPart[1]
+        .split("][")
+        .map((d) => d.replace(/^\[\[\]]/g, ""));
+      delimiter = new RegExp(delimiters.map((d) => `(${d})`).join("|"));
       input = input.split("\\n")[1];
       
     }

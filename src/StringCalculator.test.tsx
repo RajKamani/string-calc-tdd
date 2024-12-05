@@ -45,4 +45,8 @@ describe("String Calculator", () => {
   test("should handle custom delimiters of any length", () => {
     validator("//[***]\\n1***2***3", "Result: 6");
   });
+
+  test("should handle multiple delimiters", () => {
+    validator("//[*][%]\n1*2%3", "Result: 6");
+  });
 });
