@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-const parseNumbers = (input: string):number => {
-  if (!input) return 0;
+const parseNumbers = (input: string):{ sum: number; error?: string } => {
+  if (!input) return { sum: 0 };;
   
   let delimiter = /,|\\n/;
   if (input.startsWith("//")) {
@@ -10,16 +10,31 @@ const parseNumbers = (input: string):number => {
     input = parts[1];
   }
   const numArray = input.split(delimiter).map(Number);
-  return numArray.reduce((sum, num) => sum + num, 0);
+  const negatives = numArray.filter((num) => num < 0);
+
+  if (negatives.length) {
+    return {
+      sum: 0,
+      error: `Negative numbers not allowed: ${negatives.join(", ")}`,
+    };
+  }
+  return  { sum: numArray.reduce((sum, num) => sum + num, 0) };
 };
 
 const StringCalculator: React.FC = () => {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCalculate = () => {
-    const sum :number= parseNumbers(input);
-    setResult(sum);
+    const { sum, error } = parseNumbers(input);
+    if (error) {
+      setError(error);
+      setResult(null);
+    } else {
+      setResult(sum);
+      setError(null);
+    }
   };
 
   return (
@@ -37,6 +52,7 @@ const StringCalculator: React.FC = () => {
       </button>
 
       {result !== null && <p data-testid="result-message">Result: {result}</p>}
+      {error && <p data-testid="result-message" style={{ color: "red" }}>{error}</p>}
     </div>
   );
 };

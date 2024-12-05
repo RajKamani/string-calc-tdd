@@ -33,4 +33,8 @@ describe("String Calculator", () => {
   test("should handle custom delimiters", () => {
     validator("//;\\n1;2;3", "Result: 6");
   });
+
+  test("should displays error for negative numbers", () => {
+    validator("//;\\n1;-2;3;-4", "Negative numbers not allowed: -2, -4");
+  });
 });
