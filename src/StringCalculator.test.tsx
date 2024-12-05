@@ -2,6 +2,16 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import StringCalculator from "./StringCalculator";
 
 describe("String Calculator", () => {
+  const validator = (inputString: string, result: string) => {
+    render(<StringCalculator />);
+    const input = screen.getByTestId("input-box");
+    const button = screen.getByTestId("calculate-button");
+
+    fireEvent.change(input, { target: { value: inputString } });
+    fireEvent.click(button);
+    expect(screen.getByTestId("result-message")).toHaveTextContent(result);
+  };
+
   test("renders input, button, and result area", () => {
     render(<StringCalculator />);
     expect(screen.getByTestId("input-box")).toBeInTheDocument();
@@ -9,35 +19,18 @@ describe("String Calculator", () => {
   });
 
   test("should shows 0 for empty input", () => {
-    render(<StringCalculator />);
-    const input = screen.getByTestId("input-box");
-    const button = screen.getByTestId("calculate-button");
-
-    fireEvent.change(input, { target: { value: "" } });
-    fireEvent.click(button);
-
-    expect(screen.getByTestId("result-message")).toHaveTextContent("Result: 0");
+    validator("", "Result: 0");
   });
 
   test("should calculates sum for multiple numbers", () => {
-    render(<StringCalculator />);
-    const input = screen.getByTestId("input-box");
-    const button = screen.getByTestId("calculate-button");
-
-    fireEvent.change(input, { target: { value: "1,2,3" } });
-    fireEvent.click(button);
-
-    expect(screen.getByTestId("result-message")).toHaveTextContent("Result: 6");
-  })
+    validator("1,2,3", "Result: 6");
+  });
 
   test("should handle newlines as delimiters", () => {
-    render(<StringCalculator />);
-    const input = screen.getByTestId("input-box");
-    const button = screen.getByTestId("calculate-button");
+    validator("1\\n2,3", "Result: 6");
+  });
 
-    fireEvent.change(input, { target: { value: "1\\n2,3" } });
-    fireEvent.click(button);
-
-    expect(screen.getByTestId("result-message")).toHaveTextContent("Result: 6");
-  })
+  test("should handle custom delimiters", () => {
+    validator("//;\\n1;2;3", "Result: 6");
+  });
 });

@@ -2,7 +2,14 @@ import React, { useState } from "react";
 
 const parseNumbers = (input: string):number => {
   if (!input) return 0;
-  const numArray = input.split(/,|\\n/).map(Number);
+  
+  let delimiter = /,|\\n/;
+  if (input.startsWith("//")) {
+    const parts = input.split("\\n");
+    delimiter = new RegExp(parts[0][2]);
+    input = parts[1];
+  }
+  const numArray = input.split(delimiter).map(Number);
   return numArray.reduce((sum, num) => sum + num, 0);
 };
 
