@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./StringCalculator.css";
 
 const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -54,22 +55,38 @@ const StringCalculator: React.FC = () => {
   };
 
   return (
-    <div>
-      <h1>String Calculator</h1>
+    <div className="calculator-container">
+      <h1 className="calculator-header">String Calculator</h1>
+
       <input
+        className="calculator-input"
         data-testid="input-box"
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
         placeholder="Enter string"
       />
-      <button data-testid="calculate-button" onClick={handleCalculate}>
+      <button
+        className="calculator-button"
+        data-testid="calculate-button"
+        onClick={handleCalculate}
+      >
         Calculate
       </button>
 
-      {result !== null && <p data-testid="result-message">Result: {result}</p>}
+      {result !== null && (
+        <p
+          data-testid="result-message"
+          className="calculator-result result-text"
+        >
+          Result: {result}
+        </p>
+      )}
       {error && (
-        <p data-testid="result-message" style={{ color: "red" }}>
+        <p
+          data-testid="result-message"
+          className="calculator-result error-text"
+        >
           {error}
         </p>
       )}
