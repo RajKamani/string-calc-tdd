@@ -4,10 +4,7 @@ export const calculateSum = (
   input: string
 ): { sum: number; error?: string } => {
   if (!input) return { sum: 0 };
-
-  let delimiter = /,|\\n/;
-  ({ input, delimiter } = findDelimiterAndNumber(input, delimiter));
-  const numArray = input.split(delimiter).map(Number);
+  const numArray = parseNumber(input);
   const negatives = checkNegatives(numArray);
 
   if (negatives.length) {
@@ -23,20 +20,26 @@ export const calculateSum = (
   };
 };
 
+function parseNumber(input: string) {
+  let delimiterString = ",|\\\\n";
+  let delimiter;
+  ({ input, delimiter } = findDelimiterAndNumber(input, delimiterString));
+  return input.split(delimiter).map(Number);
+}
 function checkNegatives(numArray: number[]) {
   return numArray.filter((num) => num < 0);
 }
 
-function findDelimiterAndNumber(input: string, delimiter: RegExp) {
+function findDelimiterAndNumber(input: string, delimiter: string) {
   if (!input.startsWith("//")) {
-    return { input, delimiter };
+    return { input, delimiter: new RegExp(delimiter) };
   }
 
   const multipleDelimiter = input.match(/^\/\/(\[.+\])\\n/);
   if (!multipleDelimiter) {
     return {
       input: extractNumbers(input),
-      delimiter: new RegExp(input[2]),
+      delimiter: new RegExp(`${input[2]}|${delimiter}`),
     };
   }
   const delimiters = multipleDelimiter[1]
