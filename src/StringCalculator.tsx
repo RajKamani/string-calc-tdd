@@ -1,42 +1,6 @@
 import React, { useState } from "react";
 import "./StringCalculator.css";
-
-const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-const parseNumbers = (input: string): { sum: number; error?: string } => {
-  if (!input) return { sum: 0 };
-
-  let delimiter = /,|\\n/;
-  if (input.startsWith("//")) {
-    const delimiterPart = input.match(/^\/\/(\[.+\])\\n/);
-    if (delimiterPart) {
-      const delimiters = delimiterPart[1]
-        .match(/\[.*?\]/g)!
-        .map((d) => d.slice(1, -1)); // Remove square brackets
-      delimiter = new RegExp(
-        delimiters.map((d) => `(${escapeRegex(d)})`).join("|")
-      );
-      input = input.split("\\n")[1];
-    } else {
-      delimiter = new RegExp(input[2]); // Single character delimiter
-      input = input.split("\\n")[1];
-    }
-  }
-  const numArray = input.split(delimiter).map(Number);
-  const negatives = numArray.filter((num) => num < 0);
-
-  if (negatives.length) {
-    return {
-      sum: 0,
-      error: `Negative numbers not allowed: ${negatives.join(", ")}`,
-    };
-  }
-  return {
-    sum: numArray
-      .filter((num) => num <= 1000)
-      .reduce((sum, num) => sum + num, 0),
-  };
-};
+import { calculateSum } from "./calculateSum";
 
 const StringCalculator: React.FC = () => {
   const [input, setInput] = useState("");
@@ -44,7 +8,7 @@ const StringCalculator: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleCalculate = () => {
-    const { sum, error } = parseNumbers(input);
+    const { sum, error } = calculateSum(input);
     if (error) {
       setError(error);
       setResult(null);
